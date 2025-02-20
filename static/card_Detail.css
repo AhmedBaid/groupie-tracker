@@ -369,6 +369,9 @@ nav {
 }
 
 @media (max-width: 1100px) {
+  nav {
+    padding: 15px 40px;
+  }
   .image-text {
     width: 380px;
     height: 400px;
