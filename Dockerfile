@@ -10,7 +10,7 @@ COPY . .
 
 RUN go build -o main ./cmd
 
-LABEL maintainer="ranniz | abaid"
+LABEL maintainer="ranniz | abaid | ayazizi"
 LABEL version="1.0"
 LABEL description="groupie-tracker"
 
