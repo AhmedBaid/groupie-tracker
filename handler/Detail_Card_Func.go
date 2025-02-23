@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"net/http"
 	"strconv"
 
@@ -13,6 +14,22 @@ func Detail_Card_Func(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		// execute the status page template
 		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorMethodnotAll, http.StatusMethodNotAllowed)
+		return
+	}
+	// fetching the artists
+	var fetch_artist []tools.Artists
+	url := "https://groupietrackers.herokuapp.com/api/artists"
+	// get the api data
+	res, err := http.Get(url)
+	if err != nil {
+		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
+		return
+	}
+	defer res.Body.Close()
+	// decode the jsone data
+	err = json.NewDecoder(res.Body).Decode(&fetch_artist)
+	if err != nil {
+		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
 		return
 	}
 	type fetchingData struct {
@@ -31,9 +48,9 @@ func Detail_Card_Func(w http.ResponseWriter, r *http.Request) {
 	}
 	var artistFound *tools.Artists
 	// get the user
-	for i := range Artists {
-		if Id == Artists[i].Id {
-			artistFound = &Artists[i]
+	for i := range fetch_artist {
+		if Id == fetch_artist[i].Id {
+			artistFound = &fetch_artist[i]
 			break
 		}
 	}
@@ -68,11 +85,11 @@ func Detail_Card_Func(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// set all the data  that we found into the fetching variable
-	fetching := fetchingData{
+	fetching_data := fetchingData{
 		Artist:    artistFound,
 		Locations: locations,
 		Dates:     dates,
 		Relations: relations,
 	}
-	helpers.RenderTemplates(w, "detailsCard.html", fetching, http.StatusOK)
+	helpers.RenderTemplates(w, "detailsCard.html", fetching_data, http.StatusOK)
 }
