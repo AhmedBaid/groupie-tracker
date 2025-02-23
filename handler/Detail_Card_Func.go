@@ -66,6 +66,7 @@ func Detail_Card_Func(w http.ResponseWriter, r *http.Request) {
 	Locations_url := artistFound.Locations
 	ConcertDates_url := artistFound.ConcertDates
 	Relations_url := artistFound.Relations
+	
 	// fetch the location and get the result  in the location variable
 	errr := helpers.Fetch_By_Id(Locations_url, &locations)
 	if errr != nil {

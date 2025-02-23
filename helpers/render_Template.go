@@ -16,7 +16,10 @@ func RenderTemplates(w http.ResponseWriter, temp string, data interface{}, statu
 		status = http.StatusInternalServerError
 		err := tools.Tp.ExecuteTemplate(&buf, "statusPage.html", tools.ErrorInternalServerErr)
 		if err != nil {
+			w.WriteHeader(500)
 			w.Write([]byte(PageDeleted()))
+
+			return
 		}
 	}
 	w.WriteHeader(status)
