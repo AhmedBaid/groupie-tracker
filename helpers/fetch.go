@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func Fetch_By_Id(url string, target interface{}) error {
+func Fetch(url string, target interface{}) error {
 	// get the data from the url
 	res, err := http.Get(url)
 	if err != nil {
@@ -13,7 +13,7 @@ func Fetch_By_Id(url string, target interface{}) error {
 	}
 	defer res.Body.Close()
 	// read the response body and decode it to the target variable
-	err = json.NewDecoder(res.Body).Decode(target)
+	err = json.NewDecoder(res.Body).Decode(&target)
 	if err != nil {
 		return err
 	}

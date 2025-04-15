@@ -1,16 +1,13 @@
 package handler
 
 import (
-	"encoding/json"
 	"net/http"
 
 	"groupie/helpers"
 	tools "groupie/tools"
 )
 
-
 func Groupie_Func(w http.ResponseWriter, r *http.Request) {
-	var Artists []tools.Artists
 	// check the path
 	if r.URL.Path != "/" {
 		// execute the not found  template
@@ -23,19 +20,17 @@ func Groupie_Func(w http.ResponseWriter, r *http.Request) {
 		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorMethodnotAll, http.StatusMethodNotAllowed)
 		return
 	}
+	finalData := &tools.Data{}
+
+	// initialise the variables
+	var allArtists *[]tools.Artists
 	url := "https://groupietrackers.herokuapp.com/api/artists"
-	// get the api data
-	res, err := http.Get(url)
+	err := helpers.Fetch(url, &allArtists)
 	if err != nil {
 		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
 		return
 	}
-	defer res.Body.Close()
-	// decode the jsone data
-	err = json.NewDecoder(res.Body).Decode(&Artists)
-	if err != nil {
-		helpers.RenderTemplates(w, "statusPage.html", tools.ErrorInternalServerErr, http.StatusInternalServerError)
-		return
-	}
-	helpers.RenderTemplates(w, "index.html", Artists, http.StatusOK)
+	Handle_data(allArtists, finalData)
+	finalData.Artists = allArtists
+	helpers.RenderTemplates(w, "index.html", finalData, http.StatusOK)
 }

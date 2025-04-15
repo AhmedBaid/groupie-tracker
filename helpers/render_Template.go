@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"bytes"
+	"fmt"
 	"net/http"
 
 	"groupie/tools"
@@ -16,6 +17,7 @@ func RenderTemplates(w http.ResponseWriter, temp string, data interface{}, statu
 		status = http.StatusInternalServerError
 		err := tools.Tp.ExecuteTemplate(&buf, "statusPage.html", tools.ErrorInternalServerErr)
 		if err != nil {
+			fmt.Println("error")
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(PageDeleted()))
 			return
